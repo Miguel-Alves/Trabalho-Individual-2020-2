@@ -16,7 +16,7 @@ jobs:
       - name: build
         run: |
            docker network create app-network
-           docker-compose up
+           docker-compose up --build -d
       - name: style_client
         run: docker-compose run -e "CLIENT_ENV=style" client
 
