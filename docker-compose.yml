@@ -8,6 +8,7 @@ services:
     volumes:
       - ./client:/client
       - /client/node_modules 
+    entrypoint: ["sh", "./client/scripts/start.sh"]
   db:
     image: postgres
     ports:
@@ -34,6 +35,8 @@ services:
       - db
     networks:
       - app-network
+    entrypoint: ["sh","./scripts/start.sh"]
+
 
 networks:
   app-network:

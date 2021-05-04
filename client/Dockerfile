@@ -5,4 +5,4 @@ ADD . /client
 RUN yarn install
 RUN yarn global add @quasar/cli
 EXPOSE 8080
-CMD quasar dev
+#CMD quasar dev
