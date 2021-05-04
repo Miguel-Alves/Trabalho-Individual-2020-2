@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd client/
+#cd client/
 yarn install
 
 if [ -n $CLIENT_ENV ]

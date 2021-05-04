@@ -84,16 +84,16 @@ if os.getenv('API_ENV') == 'test':
         }
     }
 elif os.getenv('API_ENV') == 'development' or os.getenv('API_ENV') == 'style':
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': 'db',
-        'PORT': '5432',
-    }
-}
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'postgres',
+            'USER': 'postgres',
+            'PASSWORD': 'password',
+            'HOST': 'db',
+            'PORT': '5432',
+        }
+    }   
 
 
 # Password validation
