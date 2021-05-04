@@ -1,0 +1,70 @@
+name: Running Code Coverage
+
+on:
+  push: # any branch
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --mount type=tmpfs,destination=/var/lib/postgresql/data --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 2 
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Set up Python 3.8.9
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8.9
+
+    - name: retrieve client coverage
+      env:
+        NODE_ENV: test
+      run: |
+        yarn install
+        yarn test:unit:coverage
+      working-directory: client
+
+    - name: retrieve api coverage
+      env:
+        API_ENV: test
+      run: |
+        sudo apt-get -yqq install libpq-dev
+        pip3 install -r ./requirements.txt
+        python ./manage.py migrate
+        coverage run ./manage.py test
+      working-directory: api
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
